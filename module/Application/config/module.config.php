@@ -52,6 +52,29 @@ return array(
                     ),
                 ),
             ),
+            
+            'upload-progress' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/upload-progress',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action'     => 'uploadProgress',
+                    ),
+                ),
+            ),
+            
+//            change-text
+            'change-text' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/change-text',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action'     => 'changeText',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
@@ -92,6 +115,9 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
+        ),
+        'strategies' => array(
+            'ViewJsonStrategy',
         ),
     ),
     // Placeholder for console routes
