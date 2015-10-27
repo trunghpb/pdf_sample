@@ -1,0 +1,99 @@
+2015-10-22T16:58:49+07:00 INFO (6): Array
+(
+    [pdf-file] => Array
+        (
+            [name] => 12144703_10206378640319872_8850284487182924136_n.jpg
+            [type] => image/jpeg
+            [tmp_name] => /tmp/phpqAQaqj
+            [error] => 0
+            [size] => 99126
+        )
+
+)
+
+2015-10-22T16:58:50+07:00 CRIT (2): exception 'Zend\Mvc\Router\Exception\RuntimeException' with message 'Route with name "upload-form" not found' in /var/www/zf/vendor/zendframework/zend-mvc/src/Router/Http/TreeRouteStack.php:317
+Stack trace:
+#0 /var/www/zf/vendor/zendframework/zend-mvc/src/Controller/Plugin/Url.php(99): Zend\Mvc\Router\Http\TreeRouteStack->assemble(Array, Array)
+#1 /var/www/zf/vendor/zendframework/zend-mvc/src/Controller/Plugin/Redirect.php(48): Zend\Mvc\Controller\Plugin\Url->fromRoute('upload-form/suc...', Array, Array, false)
+#2 /var/www/zf/module/Application/src/Application/Controller/IndexController.php(32): Zend\Mvc\Controller\Plugin\Redirect->toRoute('upload-form/suc...')
+#3 /var/www/zf/vendor/zendframework/zend-mvc/src/Controller/AbstractActionController.php(82): Application\Controller\IndexController->indexAction()
+#4 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
+#5 /var/www/zf/vendor/zendframework/zend-eventmanager/src/EventManager.php(444): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#6 /var/www/zf/vendor/zendframework/zend-eventmanager/src/EventManager.php(205): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#7 /var/www/zf/vendor/zendframework/zend-mvc/src/Controller/AbstractController.php(118): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#8 /var/www/zf/vendor/zendframework/zend-mvc/src/DispatchListener.php(93): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
+#9 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
+#10 /var/www/zf/vendor/zendframework/zend-eventmanager/src/EventManager.php(444): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#11 /var/www/zf/vendor/zendframework/zend-eventmanager/src/EventManager.php(205): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#12 /var/www/zf/vendor/zendframework/zend-mvc/src/Application.php(314): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#13 /var/www/zf/public/index.php(28): Zend\Mvc\Application->run()
+#14 {main}
+2015-10-22T17:41:01+07:00 INFO (6): Array
+(
+    [pdf-file] => Array
+        (
+            [name] => 12096360_10206378639359848_655315448285394646_n.jpg
+            [type] => image/jpeg
+            [tmp_name] => /tmp/phpC4Sdzn
+            [error] => 0
+            [size] => 97617
+        )
+
+)
+
+2015-10-22T17:41:01+07:00 CRIT (2): exception 'Zend\Mvc\Router\Exception\RuntimeException' with message 'Route with name "upload-form" not found' in /var/www/zf/vendor/zendframework/zend-mvc/src/Router/Http/TreeRouteStack.php:317
+Stack trace:
+#0 /var/www/zf/vendor/zendframework/zend-mvc/src/Controller/Plugin/Url.php(99): Zend\Mvc\Router\Http\TreeRouteStack->assemble(Array, Array)
+#1 /var/www/zf/vendor/zendframework/zend-mvc/src/Controller/Plugin/Redirect.php(48): Zend\Mvc\Controller\Plugin\Url->fromRoute('upload-form/suc...', Array, Array, false)
+#2 /var/www/zf/module/Application/src/Application/Controller/IndexController.php(33): Zend\Mvc\Controller\Plugin\Redirect->toRoute('upload-form/suc...')
+#3 /var/www/zf/vendor/zendframework/zend-mvc/src/Controller/AbstractActionController.php(82): Application\Controller\IndexController->indexAction()
+#4 [internal function]: Zend\Mvc\Controller\AbstractActionController->onDispatch(Object(Zend\Mvc\MvcEvent))
+#5 /var/www/zf/vendor/zendframework/zend-eventmanager/src/EventManager.php(444): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#6 /var/www/zf/vendor/zendframework/zend-eventmanager/src/EventManager.php(205): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#7 /var/www/zf/vendor/zendframework/zend-mvc/src/Controller/AbstractController.php(118): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#8 /var/www/zf/vendor/zendframework/zend-mvc/src/DispatchListener.php(93): Zend\Mvc\Controller\AbstractController->dispatch(Object(Zend\Http\PhpEnvironment\Request), Object(Zend\Http\PhpEnvironment\Response))
+#9 [internal function]: Zend\Mvc\DispatchListener->onDispatch(Object(Zend\Mvc\MvcEvent))
+#10 /var/www/zf/vendor/zendframework/zend-eventmanager/src/EventManager.php(444): call_user_func(Array, Object(Zend\Mvc\MvcEvent))
+#11 /var/www/zf/vendor/zendframework/zend-eventmanager/src/EventManager.php(205): Zend\EventManager\EventManager->triggerListeners('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#12 /var/www/zf/vendor/zendframework/zend-mvc/src/Application.php(314): Zend\EventManager\EventManager->trigger('dispatch', Object(Zend\Mvc\MvcEvent), Object(Closure))
+#13 /var/www/zf/public/index.php(28): Zend\Mvc\Application->run()
+#14 {main}
+2015-10-22T17:45:33+07:00 INFO (6): Array
+(
+    [pdf-file] => Array
+        (
+            [name] => 11061684_10206378638639830_3554792186521517933_n.jpg
+            [type] => image/jpeg
+            [tmp_name] => /tmp/phpLcr8xn
+            [error] => 0
+            [size] => 143530
+        )
+
+)
+
+2015-10-22T17:46:07+07:00 INFO (6): Array
+(
+    [pdf-file] => Array
+        (
+            [name] => 12096360_10206378639359848_655315448285394646_n.jpg
+            [type] => image/jpeg
+            [tmp_name] => /tmp/phpZYBJcU
+            [error] => 0
+            [size] => 97617
+        )
+
+)
+
+2015-10-22T17:46:27+07:00 INFO (6): Array
+(
+    [pdf-file] => Array
+        (
+            [name] => DEV - IDS's Schedule.pdf
+            [type] => application/pdf
+            [tmp_name] => /tmp/phpTfnAYg
+            [error] => 0
+            [size] => 122266
+        )
+
+)
+
