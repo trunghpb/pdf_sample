@@ -65,13 +65,48 @@ return array(
             ),
             
 //            change-text
-            'change-text' => array(
+            'edit-pdf-file' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/change-text',
+                    'route'    => '/edit-pdf-file',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Index',
-                        'action'     => 'changeText',
+                        'action'     => 'editPdfFile',
+                    ),
+                ),
+            ),
+            
+            //list-pdf-file
+            'list-pdf-file' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/list-pdf-file',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action'     => 'listPdfFile',
+                    ),
+                ),
+            ),
+            
+            //show-edit-pdf-overlay
+            'show-edit-pdf-overlay' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/show-edit-pdf-overlay',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action'     => 'showEditPdfOverlay',
+                    ),
+                ),
+            ),
+            //download-pdf-file
+            'download-pdf-file' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/download-pdf-file',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action'     => 'downloadPdfFile',
                     ),
                 ),
             ),

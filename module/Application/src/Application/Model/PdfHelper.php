@@ -17,42 +17,69 @@ use mikehaertl\pdftk\Pdf;
 class PdfHelper {
     protected $pdf;
     protected $metadataDOM;
-    protected $filePath;
-    public function __construct($filePath) {
-        if ($filePath && file_exists($filePath)){
-            $this->filePath = $filePath;
-//            $this->pdf = new \ZendPdf\PdfParser\StructureParser;
-            
-//            $this->pdf = PdfDocument::load($filePath);
-//            $this->metadataDOM = new \DOMDocument();
-//            $this->pdf->pages[0]->
-//            $this->metadataDOM->loadXML($this->pdf->));                    
-        }
-    }
-    
-    public function test(){
-        // Fill form with data array
-        $pdf = new Pdf('/var/www/zf/data/fileupload/bbbb_form_new.pdf');
-        $pdf->fillForm(array('title'=>'abcdef'))
-            ->needAppearances();
-        if ($pdf->saveAs('/var/www/zf/data/fileupload/filled.pdf')){
-            return true;
-        }else{
-            return $pdf->getError();
-        }
+    protected $pdfFile;
+    protected $uploadDir;
+    protected $error;
+    static $_self;
 
+
+    public function getError() {
+        return $this->error;
     }
 
-    public function changeText($search, $newText){
-        $xpath = new DOMXPath($this->metadataDOM);
-        $search = "[Report Title]"; 
-        $searchedNode = $xpath->query("//path[text()=".$search."\"]"); 
-        $searchedNode->nodeValue = "$newText";
+    public function setError($error) {
+        $this->error = $error;
         return $this;
     }
-    
-    public function save(){
-        $this->pdf->setMetadata($this->metadataDOM->saveXML());
-        $this->pdf->save($this->filePath.'.pdf');
+
+    public function __construct($file =   null) {
+        $this->uploadDir = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))).'/data/fileupload/';
+        if ($file){
+            $this->pdfFile = $file ;
+            $this->pdf = new Pdf($this->uploadDir.$this->pdfFile);
+        }
+        
     }
+
+    public function updateContent($data){
+        $this->pdf->fillForm($data)
+            ->needAppearances()
+//            ->allow('Printing')
+            ;
+        if ($this->pdf->saveAs(dirname($this->uploadDir).'/filled/'.$this->pdfFile.'.filled.pdf')){
+            return true;
+        }else{
+            $this->setError($pdf->getError());
+            return false;
+        }
+    }
+    
+    public static function create($filePath = null) {
+        if (!self::$_self){
+            return new self($filePath);
+        } else { return self::$_self;}
+    }
+
+    public function getPdfFiles() {
+        return array_values(array_diff(scandir($this->uploadDir), ['..', '.']));
+    }
+    
+    public function getFields(){
+        $fieldList = [];
+        $fieldListString = $this->pdf->getDataFields();
+        $dataFieldArray = explode('---', $fieldListString);
+        unset($dataFieldArray[0]);
+        foreach ($dataFieldArray as $key => $fieldString){
+            $fieldArray = explode("\n", $fieldString);
+            unset($fieldArray[0]);
+            unset($fieldArray[count($fieldArray)]);
+            foreach ($fieldArray as $valueString){
+                $value = explode(':', $valueString);
+                $fieldList[$key][$value[0]] = trim($value[1]);
+            }
+        }
+        
+        return $fieldList;
+    }
+
 }

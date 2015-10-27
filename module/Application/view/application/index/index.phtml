@@ -7,9 +7,9 @@
     <div class="well bs-component">
         <?php $form->prepare(); // The correct enctype is set here ?>
         <?php echo $this->form()->openTag($form); ?>
-        
-        <?php echo $this->formFileSessionProgress();?>
-        
+
+        <?php echo $this->formFileSessionProgress(); ?>
+
         <div class="form-element">
             <?php $fileElement = $form->get('pdf-file'); ?>
             <?php echo $this->formLabel($fileElement); ?>
@@ -33,105 +33,199 @@
     <p></p>
 </div>
 
-<div class="jumbotron">
-    <form name="change-text-form" id="change-text-form" action="/change-text">
-        <input type="text" name="inp-title" id="inp-title">
-        <button>Change Title</button>
-    </form>
+<div class="jumbotron" id="file_list_container">
 </div>
 
-<div class="jumbotron" id="image_container">
+<div class="modal" id="EditPdfForm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Edit Pdf</h4>
+            </div>
+            <div class="modal-body" id="edit-pdf-modal-body">
+                <p>Please wait…</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="edit-pdf-close">Close</button>
+                <button type="button" class="btn btn-primary" id="form-edit-submit">Save</button>
+                <button type="button" class="btn btn-primary" id="form-edit-download">Download</button>
+                <button type="button" class="btn btn-primary" id="form-edit-preview">Preview</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/jquery.form.js"></script>
+<div class="modal" id="message-box">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Message</h4>
+            </div>
+            <div class="modal-body" id="message-box-body">
+                <p>Please wait…</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="preview-box">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Message</h4>
+            </div>
+            <div class="modal-body" id="preview-box-body">
+                <p>Please wait…</p>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     var progressInterval;
-    
-    function getProgress(){
-        var url = '/upload-progress?id=' +$('#progress_key').val();
-        $.getJSON(url, function (data){
-           if (data.status && !data.status.done){
-               var value = Math.floor((data.status.current / data.status.total) * 100);
-               showPrgress(value, 'Uploading...');
-           } else {
-               showProgress(100, 'Completed!');
-               clearInterval(progressInterval);
-           }
+
+    function getProgress() {
+        var url = '/upload-progress?id=' + $('#progress_key').val();
+        $.getJSON(url, function (data) {
+            if (data.status && !data.status.done) {
+                var value = Math.floor((data.status.current / data.status.total) * 100);
+                showPrgress(value, 'Uploading...');
+            } else {
+                showProgress(100, 'Completed!');
+                clearInterval(progressInterval);
+            }
         });
     }
-    
-    function startProgress(){
+
+    function startProgress() {
         showProgress(0, 'Starting upload...');
         progressInterval = setInterval(getProgress, 900);
     }
-    
-    function showProgress(amount, message){
+
+    function showProgress(amount, message) {
         $('#progress').show();
         $('#progress .bar').width(amount + '%');
         $('#progress > p').html(message);
-        if (amount < 100){
+        if (amount < 100) {
             $('#progress .progress')
-                .addClass('progress-info active')
-                .removeClass('progress-success');
+                    .addClass('progress-info active')
+                    .removeClass('progress-success');
         } else {
             $('#progress .progress')
-                .removeClass('progress-info active')
-                .addClass('progress-success');
+                    .removeClass('progress-info active')
+                    .addClass('progress-success');
         }
     }
-    
-    $(function (){
-        $('#change-text-form').on('submit', function (e){
-            e.preventDefault();
-            
-            $(this).ajaxSubmit({
-                beforeSubmit: function(arr, $from, options){
-                    arr.push({name: 'isAjax', value:"1"});
-                },
-                success:function(response, statusText, xhr, $form){
 
-                    if (response.status){
-                        imageUrl = '/img/pdfThumb.jpg?timestamp=' + new Date().getTime();
-                        $("#image_container").html("<img src='" + imageUrl + "'>");
-                    } else {
-                    }            
-                },
-                error:function(a, b, c){
-                    console.log(a,b,c);
+    function showEditPdfOverlay(file) {
+
+        //showEditPdfOverlayAction
+        var url = '/show-edit-pdf-overlay?filename=' + file;
+        $.ajax(url, {
+            beforeSubmit: function (arr, $from, options) {
+                arr.push({name: 'isAjax', value: "1"});
+                arr.push({name: 'filename', value: file});
+            },
+            success: function (response, statusText, xhr, $form) {
+//                console.log(response.html);
+                $('#edit-pdf-modal-body').html(response.html);
+                $('#EditPdfForm').modal('show');
+            },
+            error: function (a, b, c) {
+                console.log(a, b, c);
+            }
+        });
+    }
+
+    function listPdfFile() {
+        var url = '/list-pdf-file';
+        $.ajax(url, {
+            beforeSubmit: function (arr, $from, options) {
+                arr.push({name: 'isAjax', value: "1"});
+            },
+            success: function (response, statusText, xhr, $form) {
+                if (response.status) {
+                    console.log(response.aryFiles);
+                    for (i = 0; i < response.aryFiles.length; i++) {
+                        $("#file_list_container").append('<div><a onclick="showEditPdfOverlay(\'' + response.aryFiles[i] + '\')">' + response.aryFiles[i] + '</a></div>');
+                    }
+                } else {
+
                 }
-            });            
-        }); 
-        
-        $('#upload-form').on('submit', function (e){
+            },
+            error: function (a, b, c) {
+                console.log(a, b, c);
+            }
+        });
+    }
+
+    $(function () {
+        listPdfFile();
+        $('#progress').hide();
+
+        $('#form-edit-download').click(function (e) {
+            var url = '/download-pdf-file?filename='+$('#filename').val();
+            window.location=url;
+        });
+
+        $('#form-edit-preview').click(function (e) {
+            imageUrl = '/img/pdfThumb.jpg?timestamp=' + new Date().getTime();
+            $('#preview-box').modal('show');
+            $("#preview-box-body").html("<img src='" + imageUrl + "'>");
+        });
+
+        $('#form-edit-submit').click(function (e) {
+            $('#message-box-body').html("<p>Please wait…</p>");            
+            $('#message-box').modal('show');
+            $('#form-edit-pdf-file').ajaxSubmit({
+                beforeSubmit: function (arr, $from, options) {
+                    arr.push({name: 'isAjax', value: "1"});
+                },
+                success: function (response, statusText, xhr, $form) {
+
+                    if (response.status) {
+                        $('#message-box-body').html("Save success");
+
+                    } else {
+                    }
+                },
+                error: function (a, b, c) {
+                    console.log(a, b, c);
+                }
+            });
+        });
+
+        $('#upload-form').on('submit', function (e) {
             e.preventDefault();
-            
-            if($('#pdf-file').val() == ''){
+
+            if ($('#pdf-file').val() == '') {
                 return;
             }
-            
+
             $(this).ajaxSubmit({
-                beforeSubmit: function(arr, $from, options){
-                    arr.push({name: 'isAjax', value:"1"});
+                beforeSubmit: function (arr, $from, options) {
+                    arr.push({name: 'isAjax', value: "1"});
                 },
-                success:function(response, statusText, xhr, $form){
+                success: function (response, statusText, xhr, $form) {
                     clearInterval(progressInterval);
                     showProgress(100, 'Completed!');
 
-                    if (response.status){
+                    if (response.status) {
                         imageUrl = '/img/pdfThumb.jpg?timestamp=' + new Date().getTime();
                         $("#image_container").html("<img src='" + imageUrl + "'>");
                     } else {
                         var fileInput = $('#pdf-file');
                         fileInput.replaceWith(fileInput.val('').clone(true));
-                    }            
+                    }
                 },
-                error:function(a, b, c){
-                    console.log(a,b,c);
+                error: function (a, b, c) {
+                    console.log(a, b, c);
                 }
-            });            
-             // Start the progress polling
+            });
+            // Start the progress polling
             startProgress();
-        });        
+        });
     });
 </script>

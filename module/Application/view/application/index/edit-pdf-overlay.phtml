@@ -1,0 +1,17 @@
+<div>
+    <form class="form-horizontal" action="edit-pdf-file" id="form-edit-pdf-file" name="form-edit-pdf-file">
+        <fieldset>
+            <input type="hidden" id="filename" name="filename" value="<?= $this->filename;?>">
+            <?php foreach ($this->fieldList as $field) { ?>
+                <?php if ('Text' == $field['FieldType']) { ?>
+                    <div class="form-group">
+                        <label for="<?= $field['FieldName'] ?>" class="col-lg-2 control-label"><?= $field['FieldName'] ?></label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="<?= $field['FieldName'] ?>" name="<?= $field['FieldName'] ?>" value="<?= isset($field['FieldValue'])?$field['FieldValue']:'' ?>">
+                        </div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
+        </fieldset>
+    </form>
+</div>

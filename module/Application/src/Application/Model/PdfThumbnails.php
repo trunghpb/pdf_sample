@@ -22,13 +22,21 @@ class PdfThumbnails {
     
     public function convertToImage(){
         $imagick = new \Imagick();
-        $rootPath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+        $rootPath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))).'/data/filled/';
+        $pdfThumbnailsPath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))).'/public/img/';
         
-        $pdfThumbnailsPath = $rootPath.'/public/img/';
 //        $image->setSize(200,300);
-        $imagick->readImage($this->pdfFileName);
-        $imagick->writeImage($pdfThumbnailsPath.$this->pdfThumbnailsName);
+        if ($imagick->readImage($rootPath.$this->pdfFileName.'.filled.pdf')){
+            if ($imagick->writeImage($pdfThumbnailsPath.$this->pdfThumbnailsName)){
+                return $pdfThumbnailsPath.$this->pdfThumbnailsName;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
         
-        return $pdfThumbnailsPath.$this->pdfThumbnailsName;
+        
+        
     }
 }
