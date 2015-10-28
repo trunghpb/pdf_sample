@@ -35,3 +35,9 @@ div.container a.brand {
     margin-left: 0;
     padding: 8px 20px 12px 40px;
 }
+.modal .modal-body {
+    max-height: 420px;
+    overflow-y: auto;
+}
+#EditPdfForm {
+	margin-top:100px;
