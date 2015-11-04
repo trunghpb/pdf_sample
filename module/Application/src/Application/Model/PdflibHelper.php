@@ -116,7 +116,7 @@ class PdflibHelper implements PdfFormInterface {
     }
 
     public function getPdfFiles() {
-        return array_values(array_diff(scandir($this->uploadDir), ['..', '.']));
+        return array_values(array_diff(scandir($this->uploadDir), ['..', '.','.DS_Store']));
     }
 
     public function setError($error) {
