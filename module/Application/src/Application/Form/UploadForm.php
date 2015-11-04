@@ -51,6 +51,7 @@ class UploadForm extends Form{
                 [
                     'target' => $basePath.'/data/fileupload/',
 //                    'randomize' =>true
+                    'use_upload_name' => true
                 ]
         );
         
