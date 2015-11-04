@@ -1,4 +1,5 @@
 <div>
+    <span id="<?= $field['FieldName'] ?>" style="color: #0000CC;">Note: Field content must less than 73 character</span>
     <form class="form-horizontal" action="edit-pdf-file" id="form-edit-pdf-file" name="form-edit-pdf-file">
         <fieldset>
             <input type="hidden" id="filename" name="filename" value="<?= $this->filename;?>">
@@ -9,6 +10,7 @@
                         <div class="col-lg-10">
                             <input type="text" class="form-control" id="<?= $field['FieldName'] ?>" name="<?= $field['FieldName'] ?>" value="<?= isset($field['FieldValue'])?$field['FieldValue']:'' ?>">
                         </div>
+                        
                     </div>
                 <?php } ?>
             <?php } ?>

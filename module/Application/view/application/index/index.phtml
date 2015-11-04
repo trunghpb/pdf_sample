@@ -148,6 +148,7 @@
             success: function (response, statusText, xhr, $form) {
                 if (response.status) {
                     console.log(response.aryFiles);
+                    $("#file_list_container").html('');
                     for (i = 0; i < response.aryFiles.length; i++) {
                         $("#file_list_container").append('<div><a onclick="showEditPdfOverlay(\'' + response.aryFiles[i] + '\')">' + response.aryFiles[i] + '</a></div>');
                     }
@@ -184,11 +185,10 @@
                     arr.push({name: 'isAjax', value: "1"});
                 },
                 success: function (response, statusText, xhr, $form) {
-
                     if (response.status) {
                         $('#message-box-body').html("Save success");
-
                     } else {
+                        $('#message-box-body').html(response.message);
                     }
                 },
                 error: function (a, b, c) {
@@ -211,10 +211,10 @@
                 success: function (response, statusText, xhr, $form) {
                     clearInterval(progressInterval);
                     showProgress(100, 'Completed!');
-
+                    listPdfFile();
                     if (response.status) {
-                        imageUrl = '/img/pdfThumb.jpg?timestamp=' + new Date().getTime();
-                        $("#image_container").html("<img src='" + imageUrl + "'>");
+//                        imageUrl = '/img/pdfThumb.jpg?timestamp=' + new Date().getTime();
+//                        $("#image_container").html("<img src='" + imageUrl + "'>");
                     } else {
                         var fileInput = $('#pdf-file');
                         fileInput.replaceWith(fileInput.val('').clone(true));

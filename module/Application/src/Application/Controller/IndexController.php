@@ -11,8 +11,9 @@
 namespace Application\Controller;
 
 use Application\Form\UploadForm;
-use Application\Model\PdfHelper;
+use Application\Model\PdflibHelper;
 use Application\Model\PdfThumbnails;
+use Application\Model\PdftkHelper;
 use Zend\Log\Logger;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\MvcEvent;
@@ -98,8 +99,26 @@ class IndexController extends AbstractActionController {
         $this->logger->info($this->params()->fromQuery());
         $param = $this->params()->fromQuery();
         $filename = $this->params()->fromQuery('filename', null);
+        
+        // validate   
+        $validateMessage = '';
+        $result = true;$limit = 73;
+        foreach ($param as $key => $value){
+            if (mb_strlen($value, 'UTF-8') > $limit){
+                $result = false;
+                $validateMessage .= "$key is longer than $limit character<br/>";
+            }
+        }
+        
+        if (!$result){
+            return new JsonModel([
+                'status' => false,
+                'message' => $validateMessage,
+            ]);
+        }
+        
         unset($param['filename']);
-        $result = PdfHelper::create($filename)
+        $result = PdflibHelper::create($filename)
                 ->updateContent($param);
 
         $thumb = new PdfThumbnails($filename);
@@ -107,14 +126,14 @@ class IndexController extends AbstractActionController {
 
         return new JsonModel([
             'status' => $result,
-            'message' => PdfHelper::create()->getError(),
+            'message' => PdftkHelper::create()->getError(),
         ]);
     }
 
     public function listPdfFileAction() {
         $logger = $this->getServiceLocator()->get('Zend\Log\Logger');
         $logger->info(__LINE__ . 'list pdf file');
-        $pdfList = PdfHelper::create()->getPdfFiles();
+        $pdfList = PdftkHelper::create()->getPdfFiles();
         $logger->info(print_r($pdfList, true));
 
         return new JsonModel([
@@ -133,7 +152,7 @@ class IndexController extends AbstractActionController {
         $viewRenderer = $this->getServiceLocator()->get('ViewRenderer');
 
         $fileNameParam = $this->params()->fromQuery('filename', null);
-        $dataViewModel->fieldList = PdfHelper::create($fileNameParam)->getFields();
+        $dataViewModel->fieldList = PdflibHelper::create($fileNameParam)->getFields();
         $dataViewModel->filename = $fileNameParam;
         $this->logger->info($dataViewModel->fieldList);
         $viewModel->html = $viewRenderer->render($dataViewModel);

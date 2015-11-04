@@ -6,12 +6,13 @@ VAGRANTFILE_API_VERSION = '2'
 @script = <<SCRIPT
 DOCUMENT_ROOT_ZEND="/var/www/zf/public"
 apt-get update
-apt-get install -y apache2 git curl php5-cli php5 php5-intl libapache2-mod-php5
+apt-get install -y apache2 git curl php5-cli mysql-server php5-mysql php5 php5-intl libapache2-mod-php5 php5-mcrypt
 echo "
 <VirtualHost *:80>
     ServerName skeleton-zf.local
-    DocumentRoot $DOCUMENT_ROOT_ZEND
-    <Directory $DOCUMENT_ROOT_ZEND>
+    DocumentRoot /var/www/zf/public
+	SetEnv APPLICATION_ENV "development"
+    <Directory /var/www/zf/public >
         DirectoryIndex index.php
         AllowOverride All
         Order allow,deny

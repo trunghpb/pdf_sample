@@ -9,6 +9,14 @@
     "homepage": "http://framework.zend.com/",
     "require": {
         "php": ">=5.5",
-        "zendframework/zendframework": "~2.5"
+        "zendframework/zendframework": "~2.5",
+        "zendframework/zftool": "dev-master",
+        "zendframework/zendpdf": "*",
+        "smalot/pdfparser": "*",
+        "gufy/pdftohtml-php": "~2",
+        "mikehaertl/php-pdftk": "^0.2.4",
+        "setasign/fpdi": "1.6",
+        "setasign/fpdi-fpdf": "1.6",
+        "twilio/sdk": "^4.5"
     }
 }
