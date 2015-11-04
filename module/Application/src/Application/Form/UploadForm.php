@@ -49,7 +49,7 @@ class UploadForm extends Form{
         $fileInput->getFilterChain()->attachByName(
             'filerenameupload',
                 [
-                    'target' => $basePath.'/data/fileupload/robust.pdf',
+                    'target' => $basePath.'/data/fileupload/pdf.pdf',
                     'randomize' =>true
                 ]
         );

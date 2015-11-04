@@ -59,15 +59,25 @@ class PdflibHelper implements PdfFormInterface {
 
         // List field
         $count = $p->pcos_get_number($indoc, "length:fields");
-
         for ($i = 0; $i < $count; $i++) {
             $id_name = $p->pcos_get_string($indoc, 'fields[' . $i . ']/T');
             $field_type = $p->pcos_get_string($indoc, 'fields[' . $i . ']/FT');
-            if ($field_type == 'Tx') {
-                $value = $p->pcos_get_string($indoc, 'fields[' . $i . ']/V');
+//            echo $i,'--',$id_name,'-',$field_type,'/';
+            
+            if ($field_type == 'Tx') { 
+                try {
+                    $value = $p->pcos_get_string($indoc, 'fields[' . $i . ']/V');
+                } catch (\PDFlibException $pdfex) {
+                    $value = "";
+                } catch (Exception $ex){
+                    $value = "";
+                }           
                 $resultset[$resultsetCount]['FieldName'] = $id_name;
                 $resultset[$resultsetCount]['FieldType'] = 'Text';
-                $resultset[$resultsetCount++]['FieldValue'] = $value;
+                if ($value){
+                    $resultset[$resultsetCount]['FieldValue'] = $value;
+                }
+                $resultsetCount++;
             }
         }
 
