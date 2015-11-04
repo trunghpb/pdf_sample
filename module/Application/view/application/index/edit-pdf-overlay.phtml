@@ -19,6 +19,7 @@
             <label for="image-name" class="col-lg-2 control-label">Image</label>    
             <div class="col-lg-3">
                 <select class="form-control" id="image-name" name="image-name">
+                    <option value=""></option>
                     <option value="hamburger.jpg">hamburger</option>
                     <option value="beef.jpg">beef</option>
                     <option value="vegetable.jpg">vegetable</option>
@@ -29,6 +30,7 @@
             <label for="image-item" class="col-lg-1 control-label">Item</label>    
             <div class="col-lg-4">
                 <select class="form-control" id="image-item" name="image-item">
+                    <option value=""></option>
                     <?php foreach ($this->fieldList as $field) { ?>
                         <option value="<?= $field['FieldName'] ?>"><?= $field['FieldName'] ?></option>
                     <?php } ?>
