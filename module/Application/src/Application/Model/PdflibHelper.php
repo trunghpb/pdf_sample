@@ -18,6 +18,7 @@ class PdflibHelper implements PdfFormInterface {
     protected $pdf;
     protected $pdfFile;
     protected $uploadDir;
+    protected $imageDir;
     protected $error;
     static $_self;
     protected $fontFile;
@@ -28,32 +29,33 @@ class PdflibHelper implements PdfFormInterface {
     const FONT_GOTHIC = 'Gothic';
     const FONT_MIDASHI = 'Midashi';
     const FONT_FUTO = 'Futo';
-    
+
     public function __construct($file = null) {
         $this->uploadDir = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . '/data/fileupload/';
+        $this->imageDir = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . '/data/images/';
         if ($file) {
             $this->pdfFile = $file;
         }
-        $this->fontFile = 'ARIALUNI.TTF';// default font
-        
+        $this->fontFile = 'ARIALUNI.TTF'; // default font
+
         $this->supportedFont = [
-            self::FONT_ARIAL => 'ARIALUNI.TTF', 
+            self::FONT_ARIAL => 'ARIALUNI.TTF',
             self::FONT_RYUMIN => 'A-OTF-RyuminPro-Medium.otf',
             self::FONT_GOTHIC => 'A-OTF-GothicMB101Pro-Medium.otf',
             self::FONT_MIDASHI => 'A-OTF-MidashiGoPro-MB31.otf',
-            self::FONT_FUTO =>'A-OTF-FutoGoB101Pro-Bold.otf',
+            self::FONT_FUTO => 'A-OTF-FutoGoB101Pro-Bold.otf',
         ];
     }
 
     public function getError() {
         return $this->error;
     }
-    
-    public function setFont($fontname){
-        
-        if (array_key_exists($fontname, $this->supportedFont)){
+
+    public function setFont($fontname) {
+
+        if (array_key_exists($fontname, $this->supportedFont)) {
             $this->fontFile = $this->supportedFont[$fontname];
-        }        
+        }
         return $this;
     }
 
@@ -87,18 +89,18 @@ class PdflibHelper implements PdfFormInterface {
         for ($i = 0; $i < $count; $i++) {
             $id_name = $p->pcos_get_string($indoc, 'fields[' . $i . ']/T');
             $field_type = $p->pcos_get_string($indoc, 'fields[' . $i . ']/FT');
-            
-            if ($field_type == 'Tx') { 
+
+            if ($field_type == 'Tx') {
                 try {
                     $value = $p->pcos_get_string($indoc, 'fields[' . $i . ']/V');
                 } catch (\PDFlibException $pdfex) {
                     $value = "";
-                } catch (Exception $ex){
+                } catch (Exception $ex) {
                     $value = "";
-                }           
+                }
                 $resultset[$resultsetCount]['FieldName'] = $id_name;
                 $resultset[$resultsetCount]['FieldType'] = 'Text';
-                if ($value){
+                if ($value) {
                     $resultset[$resultsetCount]['FieldValue'] = $value;
                 }
                 $resultsetCount++;
@@ -116,7 +118,7 @@ class PdflibHelper implements PdfFormInterface {
     }
 
     public function getPdfFiles() {
-        return array_values(array_diff(scandir($this->uploadDir), ['..', '.','.DS_Store']));
+        return array_values(array_diff(scandir($this->uploadDir), ['..', '.', '.DS_Store']));
     }
 
     public function setError($error) {
@@ -124,7 +126,7 @@ class PdflibHelper implements PdfFormInterface {
         return null;
     }
 
-    public function updateContent($data) {
+    public function updateContent($textData, $imageData = []) {
 
         $p = new \PDFlib();
         /* start using pdflib document */
@@ -170,31 +172,41 @@ class PdflibHelper implements PdfFormInterface {
             $y2 = $p->pcos_get_number($indoc, 'fields[' . $i . ']/Rect[3]');
 
             if ($field_type == 'Tx') {
-                $value = $data[$id_name];
-                $optlist = "fontname=ArialUnicode fontsize=10.0 encoding=unicode ";
-                $tf = false;
+                if (array_key_exists($id_name, $textData)) {
+                    $value = $textData[$id_name];
+                    $optlist = "fontname=ArialUnicode fontsize=10.0 encoding=unicode ";
+                    $tf = false;
 
-                $tf = false;
-                $tf = $p->add_textflow($tf, $value, $optlist);
-                $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "blind");
-                if ($result != '_stop') {
-                    if ($result == '_boxempty') {
-                        $fontsize = 8;
-                        while ($result == '_boxempty' && --$fontsize) {
-                            $optlist_nini = "fontname=ArialUnicode fontsize={$fontsize}.0 encoding=unicode ";
+                    $tf = false;
+                    $tf = $p->add_textflow($tf, $value, $optlist);
+                    $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "blind");
+                    if ($result != '_stop') {
+                        if ($result == '_boxempty') {
+                            $fontsize = 8;
+                            while ($result == '_boxempty' && --$fontsize) {
+                                $optlist_nini = "fontname=ArialUnicode fontsize={$fontsize}.0 encoding=unicode ";
+                                $tf = false;
+                                $tf = $p->add_textflow($tf, $value, $optlist_nini);
+                                $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "");
+                            }
+                        } elseif ($result == '_boxfull') {
+                            $p->delete_textflow($tf);
+                            $optlist_scaling = "fontname=ArialUnicode fontsize=10.0 encoding=unicode horizscaling=40%";
                             $tf = false;
-                            $tf = $p->add_textflow($tf, $value, $optlist_nini);
+                            $tf = $p->add_textflow($tf, $value, $optlist_scaling);
                             $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "");
                         }
-                    } elseif ($result == '_boxfull') {
-                        $p->delete_textflow($tf);
-                        $optlist_scaling = "fontname=ArialUnicode fontsize=10.0 encoding=unicode horizscaling=40%";
-                        $tf = false;
-                        $tf = $p->add_textflow($tf, $value, $optlist_scaling);
-                        $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "");
+                    } else {
+                        $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "rewind=-1");
                     }
-                } else {
-                    $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "rewind=-1");
+                }elseif (array_key_exists($id_name, $imageData)) {
+                    $image = $p->load_image("auto", $this->imageDir.$imageData[$id_name], "");
+                    if ($image == -1) return $this->setError($p->get_errmsg());
+                    
+                    $bw = $x2 - $x1;
+                    $bh = $y2 - $y1;
+                    $oplist = "boxsize={" . $bw . " " . $bh . "} " . "position={right top} fitmethod=meet";
+                    $p->fit_image($image, $x1, $y1, $oplist);
                 }
             }
         }

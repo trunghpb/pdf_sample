@@ -105,9 +105,12 @@ class IndexController extends AbstractActionController {
         $param = $this->params()->fromQuery();
         $filename = $this->params()->fromQuery('filename', null);
         $fontname = $this->params()->fromQuery('fontname', null);
+        $imageName = $this->params()->fromQuery('image-name', null);
+        $imageItem = $this->params()->fromQuery('image-item', null);
+        
         // validate   
         $validateMessage = '';
-        $result = true;$limit = 73;
+        $result = true;$limit = 20;
         foreach ($param as $key => $value){
             if (mb_strlen($value, 'UTF-8') > $limit){
                 $result = false;
@@ -122,8 +125,12 @@ class IndexController extends AbstractActionController {
             ]);
         }
         unset($param['filename']);
+        
+        $imageData[$imageItem] = $imageName;
+        unset($param[$imageItem]);
+        
         $result = PdflibHelper::create($filename)
-                ->setFont($fontname)->updateContent($param);
+                ->setFont($fontname)->updateContent($param, $imageData);
 
         $thumb = new PdfThumbnails($filename);
         $this->logger->info($thumb->convertToImage());
