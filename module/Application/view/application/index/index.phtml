@@ -38,21 +38,24 @@
 
 <div class="modal" id="EditPdfForm">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Edit Pdf</h4>
+        <form class="form-horizontal" action="edit-pdf-file" id="form-edit-pdf-file" name="form-edit-pdf-file">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Edit Pdf</h4>
+                </div>
+                <div class="modal-body" id="edit-pdf-modal-body">
+                    <p>Please wait…</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="edit-pdf-close">Close</button>
+                    <button type="button" class="btn btn-primary" id="form-edit-submit">Save</button>
+                    <button type="button" class="btn btn-primary" id="form-edit-download">Download</button>
+                    <!--<button type="button" class="btn btn-primary" id="form-edit-add-image">Add Image</button>-->
+                    <button type="button" class="btn btn-primary" id="form-edit-preview">Preview</button>
+                </div>
             </div>
-            <div class="modal-body" id="edit-pdf-modal-body">
-                <p>Please wait…</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" id="edit-pdf-close">Close</button>
-                <button type="button" class="btn btn-primary" id="form-edit-submit">Save</button>
-                <button type="button" class="btn btn-primary" id="form-edit-download">Download</button>
-                <button type="button" class="btn btn-primary" id="form-edit-preview">Preview</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -62,6 +65,20 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title">Message</h4>
+            </div>
+            <div class="modal-body" id="message-box-body">
+                <p>Please wait…</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="upload-image-box">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Add Image</h4>
             </div>
             <div class="modal-body" id="message-box-body">
                 <p>Please wait…</p>
@@ -167,8 +184,8 @@
         $('#progress').hide();
 
         $('#form-edit-download').click(function (e) {
-            var url = '/download-pdf-file?filename='+$('#filename').val();
-            window.location=url;
+            var url = '/download-pdf-file?filename=' + $('#filename').val();
+            window.location = url;
         });
 
         $('#form-edit-preview').click(function (e) {
@@ -178,7 +195,7 @@
         });
 
         $('#form-edit-submit').click(function (e) {
-            $('#message-box-body').html("<p>Please wait…</p>");            
+            $('#message-box-body').html("<p>Please wait…</p>");
             $('#message-box').modal('show');
             $('#form-edit-pdf-file').ajaxSubmit({
                 beforeSubmit: function (arr, $from, options) {

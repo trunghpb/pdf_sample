@@ -36,6 +36,11 @@ class IndexController extends AbstractActionController {
         ],
     ];
 
+//    public function uploadImageAction(){
+//        $form = new UploadForm('upload-form');
+//    }
+
+
     public function indexAction() {
         $logger = $this->getServiceLocator()->get('Zend\Log\Logger');
         $form = new UploadForm('upload-form');
@@ -99,7 +104,7 @@ class IndexController extends AbstractActionController {
         $this->logger->info($this->params()->fromQuery());
         $param = $this->params()->fromQuery();
         $filename = $this->params()->fromQuery('filename', null);
-        
+        $fontname = $this->params()->fromQuery('fontname', null);
         // validate   
         $validateMessage = '';
         $result = true;$limit = 73;
@@ -116,10 +121,9 @@ class IndexController extends AbstractActionController {
                 'message' => $validateMessage,
             ]);
         }
-        
         unset($param['filename']);
         $result = PdflibHelper::create($filename)
-                ->updateContent($param);
+                ->setFont($fontname)->updateContent($param);
 
         $thumb = new PdfThumbnails($filename);
         $this->logger->info($thumb->convertToImage());

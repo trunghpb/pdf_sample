@@ -49,8 +49,8 @@ class UploadForm extends Form{
         $fileInput->getFilterChain()->attachByName(
             'filerenameupload',
                 [
-                    'target' => $basePath.'/data/fileupload/pdf.pdf',
-                    'randomize' =>true
+                    'target' => $basePath.'/data/fileupload/',
+//                    'randomize' =>true
                 ]
         );
         

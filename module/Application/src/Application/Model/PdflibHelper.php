@@ -20,16 +20,41 @@ class PdflibHelper implements PdfFormInterface {
     protected $uploadDir;
     protected $error;
     static $_self;
+    protected $fontFile;
+    protected $supportedFont = [];
 
+    const FONT_ARIAL = 'Arial';
+    const FONT_RYUMIN = 'Ryumin';
+    const FONT_GOTHIC = 'Gothic';
+    const FONT_MIDASHI = 'Midashi';
+    const FONT_FUTO = 'Futo';
+    
     public function __construct($file = null) {
         $this->uploadDir = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . '/data/fileupload/';
         if ($file) {
             $this->pdfFile = $file;
         }
+        $this->fontFile = 'ARIALUNI.TTF';// default font
+        
+        $this->supportedFont = [
+            self::FONT_ARIAL => 'ARIALUNI.TTF', 
+            self::FONT_RYUMIN => 'A-OTF-RyuminPro-Medium.otf',
+            self::FONT_GOTHIC => 'A-OTF-GothicMB101Pro-Medium.otf',
+            self::FONT_MIDASHI => 'A-OTF-MidashiGoPro-MB31.otf',
+            self::FONT_FUTO =>'A-OTF-FutoGoB101Pro-Bold.otf',
+        ];
     }
 
     public function getError() {
         return $this->error;
+    }
+    
+    public function setFont($fontname){
+        
+        if (array_key_exists($fontname, $this->supportedFont)){
+            $this->fontFile = $this->supportedFont[$fontname];
+        }        
+        return $this;
     }
 
     public function getFields() {
@@ -62,7 +87,6 @@ class PdflibHelper implements PdfFormInterface {
         for ($i = 0; $i < $count; $i++) {
             $id_name = $p->pcos_get_string($indoc, 'fields[' . $i . ']/T');
             $field_type = $p->pcos_get_string($indoc, 'fields[' . $i . ']/FT');
-//            echo $i,'--',$id_name,'-',$field_type,'/';
             
             if ($field_type == 'Tx') { 
                 try {
@@ -109,8 +133,8 @@ class PdflibHelper implements PdfFormInterface {
         }
         $fontdir = '/var/www/zf/reference/fonts';
         $p->set_option("textformat=utf8");
-        $p->set_option("FontOutline={ArialUnicode=$fontdir/ARIALUNI.TTF}");
-        $p->set_option("FontOutline={ArialItalic=$fontdir/ariali.ttf}");
+        $p->set_option("FontOutline={ArialUnicode=$fontdir/$this->fontFile}");
+//        $p->set_option("FontOutline={ArialItalic=$fontdir/ariali.ttf}");
 
         /* Open a document */
         $indoc = $p->open_pdi_document($this->uploadDir . $this->pdfFile, "");
