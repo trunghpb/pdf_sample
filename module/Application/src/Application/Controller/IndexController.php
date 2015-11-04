@@ -107,30 +107,33 @@ class IndexController extends AbstractActionController {
         $fontname = $this->params()->fromQuery('fontname', null);
         $imageName = $this->params()->fromQuery('image-name', null);
         $imageItem = $this->params()->fromQuery('image-item', null);
-        
-        // validate   
+
+        // validate  
+        unset($param['filename']);
         $validateMessage = '';
-        $result = true;$limit = 20;
-        foreach ($param as $key => $value){
-            if (mb_strlen($value, 'UTF-8') > $limit){
+        $result = true;
+        $limit = 20;
+        foreach ($param as $key => $value) {
+            if (mb_strlen($value, 'UTF-8') > $limit) {
                 $result = false;
                 $validateMessage .= "$key is longer than $limit character<br/>";
             }
         }
-        
-        if (!$result){
+
+        if (!$result) {
             return new JsonModel([
                 'status' => false,
                 'message' => $validateMessage,
             ]);
         }
-        unset($param['filename']);
-        
-        $imageData[$imageItem] = $imageName;
-        unset($param[$imageItem]);
-        
+        $imageData = [];
+        if ($imageItem && $imageName) {
+            $imageData[$imageItem] = $imageName;
+            unset($param[$imageItem]);
+        }
+
         $result = PdflibHelper::create($filename)
-                ->setFont($fontname)->updateContent($param, $imageData);
+                        ->setFont($fontname)->updateContent($param, $imageData);
 
         $thumb = new PdfThumbnails($filename);
         $this->logger->info($thumb->convertToImage());
@@ -177,8 +180,9 @@ class IndexController extends AbstractActionController {
 
     public function downloadPdfFileAction() {
         $this->logger->info(__LINE__ . ' ' . __METHOD__);
-        $file = $this->params()->fromQuery('filename', null);;
-        $fileName = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))).'/data/filled/'.$file.'.filled.pdf';
+        $file = $this->params()->fromQuery('filename', null);
+        ;
+        $fileName = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . '/data/filled/' . $file . '.filled.pdf';
         if (!is_file($fileName)) {
             //do something
         }
@@ -195,7 +199,7 @@ class IndexController extends AbstractActionController {
                 ->addHeaderLine('Content-Length', strlen($fileContents))
                 ->addHeaderLine('Cache-Control', 'must-revalidate')
                 ->addHeaderLine('Pragma', 'public')
-                ;
+        ;
 
         $this->logger->info(__LINE__ . ' ' . __METHOD__);
         return $this->response;
