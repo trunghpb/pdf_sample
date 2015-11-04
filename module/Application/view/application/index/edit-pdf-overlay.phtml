@@ -1,15 +1,37 @@
 <div>
-    <span style="color: #0000CC;">Note: Field content must less than 73 character</span>
+    <span style="color: #0000CC;">Note: 20文字以上入力できないので、ご注意下さい
+        <br/>テキストボックスに入力するとき、長さが超えれば長体は80%に自動修正します。</span>
     <fieldset>
+        <input type="hidden" id="filename" name="filename" value="<?= $this->filename; ?>">
         <div class="form-group">
             <label for="fontname" class="col-lg-2 control-label">Font</label>    
-            <div class="col-lg-10">
+            <div class="col-lg-4">
                 <select class="form-control" id="fontname" name="fontname">
                     <option value="Arial">Arial</option>
                     <option value="Ryumin">Ryumin</option>
                     <option value="Gothic">Gothic</option>
                     <option value="Midashi">Midashi</option>
                     <option value="Futo">Futo</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="image-name" class="col-lg-2 control-label">Image</label>    
+            <div class="col-lg-3">
+                <select class="form-control" id="image-name" name="image-name">
+                    <option value="hamburger.jpg">hamburger</option>
+                    <option value="beef.jpg">beef</option>
+                    <option value="vegetable.jpg">vegetable</option>
+                    <option value="address1.jpg">address1</option>
+                    <option value="address2.jpg">address2</option>
+                </select>
+            </div>
+            <label for="image-item" class="col-lg-1 control-label">Item</label>    
+            <div class="col-lg-4">
+                <select class="form-control" id="image-item" name="image-item">
+                    <?php foreach ($this->fieldList as $field) { ?>
+                        <option value="<?= $field['FieldName'] ?>"><?= $field['FieldName'] ?></option>
+                    <?php } ?>
                 </select>
             </div>
         </div>
