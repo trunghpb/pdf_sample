@@ -22,7 +22,7 @@ if (isset($_GET['send'])) {
     $phonenumberTo = isset($_GET['phonenumber-to']) ? $_GET['phonenumber-to'] : "";
 
     //08091862703
-    $phonenumberTo = '+81' . substr($phonenumberTo, 1);
+    $phonenumberTo = preg_replace( '/^0/', '+81', $phonenumberTo);//'+81' . substr($phonenumberTo, 1);
     
     // set your AccountSid and AuthToken from www.twilio.com/user/account
     $AccountSid = "AC0514d3dbb80d89fb7da5c191f76ed349";
