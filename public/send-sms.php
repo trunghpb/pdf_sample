@@ -15,11 +15,11 @@ setcookie($cookie_name, $limitSending, time() + (86400 * 30), "/"); // 86400 = 1
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+$messageContent = isset($_GET['message-content']) ? $_GET['message-content'] : "Test message";
+$phonenumberTo = isset($_GET['phonenumber-to']) ? $_GET['phonenumber-to'] : "";
+
 if (isset($_GET['send'])) {
     require "../vendor/twilio/sdk/Services/Twilio.php";
-
-    $messageContent = isset($_GET['message-content']) ? $_GET['message-content'] : "Test message";
-    $phonenumberTo = isset($_GET['phonenumber-to']) ? $_GET['phonenumber-to'] : "";
 
     //08091862703
     $phonenumberTo = preg_replace( '/^0/', '+81', $phonenumberTo);//'+81' . substr($phonenumberTo, 1);
