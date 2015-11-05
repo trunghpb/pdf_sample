@@ -1,19 +1,59 @@
 <?php
- 
-require "../vendor/twilio/sdk/Services/Twilio.php";
- 
-// set your AccountSid and AuthToken from www.twilio.com/user/account
-$AccountSid = "AC0514d3dbb80d89fb7da5c191f76ed349";
-$AuthToken = "b61b46812624572ee8dfb96b9d4abf81";
- 
-$client = new Services_Twilio($AccountSid, $AuthToken);
- 
-try {
-    $message = $client->account->messages->create(array(
-        "From" => "050 3177 4239",
-        "To" => "08091862703",
-        "Body" => "Test message!",
-    ));
-} catch (Services_Twilio_RestException $e) {
-    echo $e->getMessage();
+$cookie_name = 'limit-sending';
+if (isset($_COOKIE[$cookie_name])) {
+    $limitSending = $_COOKIE[$cookie_name];
+    $limitSending--;
+} else {
+    $limitSending = 20;
+}
+
+setcookie($cookie_name, $limitSending, time() + (86400 * 30), "/"); // 86400 = 1 day
+?>
+<form action="/send-sms.php" method="GET">
+    <span style="float: bottom;">
+        Limit for sending is <?= $limitSending ?> messages
+    </span>
+    <div style="padding-top: 10px">
+        Phone Number (TO):
+        <input type="text" name="phonenumber-to">
+    </div>
+    <div style="padding-top: 10px">
+        Message Content:
+        <input type="text" name="message-content">
+    </div>
+    <input type="hidden" name="send" value="1">
+    <div style="padding-top: 10px">
+        <input type="submit">
+    </div>
+</form>
+
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+if (isset($_GET['send'])) {
+    require "../vendor/twilio/sdk/Services/Twilio.php";
+
+    $messageContent = isset($_GET['message-content']) ? $_GET['message-content'] : "Test message";
+    $phonenumberTo = isset($_GET['phonenumber-to']) ? $_GET['phonenumber-to'] : "";
+
+    // set your AccountSid and AuthToken from www.twilio.com/user/account
+    $AccountSid = "AC0514d3dbb80d89fb7da5c191f76ed349";
+    $AuthToken = "b61b46812624572ee8dfb96b9d4abf81";
+
+    $client = new Services_Twilio($AccountSid, $AuthToken);
+
+    try {
+        $message = $client->account->messages->create(array(
+            "From" => "+14807393455",
+            "To" => $phonenumberTo, //"+818091862703",
+            "Body" => $messageContent,
+        ));
+
+        echo "Sent message {$message->sid}";
+    } catch (Services_Twilio_RestException $e) {
+        echo $e->getMessage();
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
 }
