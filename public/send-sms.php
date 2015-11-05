@@ -9,23 +9,7 @@ if (isset($_COOKIE[$cookie_name])) {
 
 setcookie($cookie_name, $limitSending, time() + (86400 * 30), "/"); // 86400 = 1 day
 ?>
-<form action="/send-sms.php" method="GET">
-    <span style="float: bottom;">
-        Limit for sending is <?= $limitSending ?> messages
-    </span>
-    <div style="padding-top: 10px">
-        Phone Number (TO):
-        <input type="text" name="phonenumber-to">
-    </div>
-    <div style="padding-top: 10px">
-        Message Content:
-        <input type="text" name="message-content">
-    </div>
-    <input type="hidden" name="send" value="1">
-    <div style="padding-top: 10px">
-        <input type="submit">
-    </div>
-</form>
+
 
 <?php
 error_reporting(E_ALL);
@@ -37,6 +21,9 @@ if (isset($_GET['send'])) {
     $messageContent = isset($_GET['message-content']) ? $_GET['message-content'] : "Test message";
     $phonenumberTo = isset($_GET['phonenumber-to']) ? $_GET['phonenumber-to'] : "";
 
+    //08091862703
+    $phonenumberTo = '+81' . substr($phonenumberTo, 1);
+    
     // set your AccountSid and AuthToken from www.twilio.com/user/account
     $AccountSid = "AC0514d3dbb80d89fb7da5c191f76ed349";
     $AuthToken = "b61b46812624572ee8dfb96b9d4abf81";
@@ -50,10 +37,28 @@ if (isset($_GET['send'])) {
             "Body" => $messageContent,
         ));
 
-        echo "Sent message {$message->sid}";
+        echo "Sent message {$message->sid} to number $phonenumberTo";
     } catch (Services_Twilio_RestException $e) {
         echo $e->getMessage();
     } catch (Exception $e) {
         echo $e->getMessage();
     }
 }
+?>
+<form action="/send-sms.php" method="GET">
+    <span style="float: bottom;">
+        Limit for sending is <?= $limitSending ?> messages
+    </span>
+    <div style="padding-top: 10px">
+        Phone Number (TO):
+        <input type="text" name="phonenumber-to" value="<?= $phonenumberTo?>">
+    </div>
+    <div style="padding-top: 10px">
+        Message Content:
+        <input type="text" name="message-content" value="<?= $messageContent?>">
+    </div>
+    <input type="hidden" name="send" value="1">
+    <div style="padding-top: 10px">
+        <input type="submit">
+    </div>
+</form>
