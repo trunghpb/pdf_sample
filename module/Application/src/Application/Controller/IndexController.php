@@ -112,7 +112,7 @@ class IndexController extends AbstractActionController {
         unset($param['filename']);
         $validateMessage = '';
         $result = true;
-        $limit = 20;
+        $limit = 100;
         foreach ($param as $key => $value) {
             if (mb_strlen($value, 'UTF-8') > $limit) {
                 $result = false;

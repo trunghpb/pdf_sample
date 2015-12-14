@@ -61,7 +61,7 @@ class PdftkHelper implements PdfFormInterface{
     }
 
     public function getPdfFiles() {
-        return array_values(array_diff(scandir($this->uploadDir), ['..', '.','.DS_Store']));
+        return array_values(array_diff(scandir($this->uploadDir), ['..', '.','.DS_Store','.gitignore']));
     }
     
     public function getFields(){

@@ -162,8 +162,11 @@ class PdflibHelper implements PdfFormInterface {
 
         // List field
         $count = $p->pcos_get_number($indoc, "length:fields");
-
+        
+//        $textData['text_1'] = "Cost ha \t 20";
+        
         for ($i = 0; $i < $count; $i++) {
+            $need_dot = false;
             $id_name = $p->pcos_get_string($indoc, 'fields[' . $i . ']/T');
             $field_type = $p->pcos_get_string($indoc, 'fields[' . $i . ']/FT');
             $x1 = $p->pcos_get_number($indoc, 'fields[' . $i . ']/Rect[0]');
@@ -174,26 +177,29 @@ class PdflibHelper implements PdfFormInterface {
             if ($field_type == 'Tx') {
                 if (array_key_exists($id_name, $textData)) {
                     $value = $textData[$id_name];
-                    $optlist = "fontname=ArialUnicode fontsize=10.0 encoding=unicode ";
+                    if (strpos($value, '\t')){
+                        $need_dot = true; 
+                        $value = str_replace('\t', "\t", $value);
+                    }
+                    $optlist = "fontname=ArialUnicode fontsize=10.0 encoding=unicode";
                     $tf = false;
 
-                    $tf = false;
-                    $tf = $p->add_textflow($tf, $value, $optlist);
+                    $tf = $p->add_textflow($tf, $value, $this->getDot($optlist, $need_dot));
                     $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "blind");
                     if ($result != '_stop') {
                         if ($result == '_boxempty') {
                             $fontsize = 8;
                             while ($result == '_boxempty' && --$fontsize) {
-                                $optlist_nini = "fontname=ArialUnicode fontsize={$fontsize}.0 encoding=unicode ";
+                                $optlist_nini = "fontname=ArialUnicode fontsize={$fontsize}.0 encoding=unicode";
                                 $tf = false;
-                                $tf = $p->add_textflow($tf, $value, $optlist_nini);
+                                $tf = $p->add_textflow($tf, $value, $this->getDot($optlist_nini, $need_dot));
                                 $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "");
                             }
                         } elseif ($result == '_boxfull') {
                             $p->delete_textflow($tf);
-                            $optlist_scaling = "fontname=ArialUnicode fontsize=10.0 encoding=unicode horizscaling=40%";
+                            $optlist_scaling = "fontname=ArialUnicode fontsize=10.0 encoding=unicode";
                             $tf = false;
-                            $tf = $p->add_textflow($tf, $value, $optlist_scaling);
+                            $tf = $p->add_textflow($tf, $value, $this->getDot($optlist_scaling, $need_dot));
                             $result = $p->fit_textflow($tf, $x1, $y1, $x2, $y2, "");
                         }
                     } else {
@@ -234,6 +240,14 @@ class PdflibHelper implements PdfFormInterface {
             return new self($file);
         } else {
             return self::$_self;
+        }
+    }
+    
+    public function getDot($opt, $need = false){
+        if ($need){
+            return $opt . " leader={alignment=right} ruler=100% hortabmethod=ruler tabalignment=right";
+        }else{
+            return $opt;
         }
     }
 
