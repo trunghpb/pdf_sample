@@ -80,6 +80,7 @@ Vagrant.configure(2) do |config|
     
     sudo yum install -y ImageMagick*
     sudo printf "\n" | pecl install imagick 
+    sudo bash -c "echo '' >> /etc/php.ini"
     sudo bash -c "echo extension=imagick.so >> /etc/php.ini"    
 
     PROJECT_NAME="pdf_sample"
