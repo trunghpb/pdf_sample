@@ -1,4 +1,9 @@
 <?php
+// Set system timezone to php.
+$systemShortTimezoneName = exec('date +%Z');
+$systemLongTimezoneName = timezone_name_from_abbr($systemShortTimezoneName);
+date_default_timezone_set($systemLongTimezoneName);
+
 /**
  * Display all errors when APPLICATION_ENV is development.
  */
