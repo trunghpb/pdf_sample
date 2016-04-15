@@ -134,6 +134,7 @@ class IndexController extends AbstractActionController {
 
         $result = PdflibHelper::create($filename)
                         ->setFont($fontname)->updateContent($param, $imageData);
+        $this->logger->info('PDF gennerating....'.PdflibHelper::create()->getError());
 
         $thumb = new PdfThumbnails($filename);
         $this->logger->info($thumb->convertToImage());

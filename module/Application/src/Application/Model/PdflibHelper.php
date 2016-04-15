@@ -133,7 +133,7 @@ class PdflibHelper implements PdfFormInterface {
         if ($p->begin_document('', "") == 0) {
             return $this->setError($p->get_errmsg());
         }
-        $fontdir = '/var/www/zf/reference/fonts';
+        $fontdir = getcwd().'/reference/fonts';
         $p->set_option("textformat=utf8");
         $p->set_option("FontOutline={ArialUnicode=$fontdir/$this->fontFile}");
 //        $p->set_option("FontOutline={ArialItalic=$fontdir/ariali.ttf}");
